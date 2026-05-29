@@ -88,23 +88,26 @@ export default function MessageComposer({ conversationId }: { conversationId: st
 
   if (recorder.recording) {
     return (
-      <div className="flex items-center gap-3 border-t border-slate-200 p-3">
-        <span className="flex items-center gap-2 text-sm text-red-600">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-red-600" />
+      <div className="flex items-center gap-3 border-t border-slate-100 bg-white px-6 py-4">
+        <span className="flex items-center gap-2 text-sm font-medium text-rose-600">
+          <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-rose-600" />
           Recording…
         </span>
         <button
           onClick={recorder.stop}
-          className="ml-auto rounded-full bg-red-600 px-5 py-2 text-sm font-medium text-white"
+          className="ml-auto rounded-full bg-rose-600 px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition hover:bg-rose-700"
         >
-          Stop & send
+          Stop &amp; send
         </button>
       </div>
     );
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex items-center gap-2 border-t border-slate-200 p-3">
+    <form
+      onSubmit={onSubmit}
+      className="flex items-center gap-2 border-t border-slate-100 bg-white px-4 py-3.5"
+    >
       <input
         ref={fileInput}
         type="file"
@@ -117,18 +120,23 @@ export default function MessageComposer({ conversationId }: { conversationId: st
         title="Attach image or PDF"
         onClick={() => fileInput.current?.click()}
         disabled={uploading}
-        className="rounded-full px-2 py-2 text-lg hover:bg-slate-100 disabled:opacity-50"
+        className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 transition hover:bg-brand-50 hover:text-brand-500 disabled:opacity-50"
       >
-        📎
+        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21.44 11.05 12.25 20.24a5 5 0 0 1-7.07-7.07l9.19-9.19a3 3 0 0 1 4.24 4.24l-9.2 9.19a1 1 0 0 1-1.41-1.41l8.49-8.49" />
+        </svg>
       </button>
       <button
         type="button"
         title="Record voice message"
         onClick={() => recorder.start()}
         disabled={uploading}
-        className="rounded-full px-2 py-2 text-lg hover:bg-slate-100 disabled:opacity-50"
+        className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 transition hover:bg-brand-50 hover:text-brand-500 disabled:opacity-50"
       >
-        🎤
+        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <rect x="9" y="3" width="6" height="11" rx="3" />
+          <path d="M5 11a7 7 0 0 0 14 0M12 18v3" />
+        </svg>
       </button>
       <input
         value={text}
@@ -138,14 +146,17 @@ export default function MessageComposer({ conversationId }: { conversationId: st
         }}
         placeholder={uploading ? "Uploading…" : "Type a message…"}
         disabled={uploading}
-        className="flex-1 rounded-full border border-slate-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-300"
+        className="flex-1 rounded-full border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-ink-900 placeholder:text-slate-400 focus:border-brand-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-100"
       />
       <button
         type="submit"
         disabled={!text.trim() || uploading}
-        className="rounded-full bg-slate-800 px-5 py-2 text-sm font-medium text-white disabled:opacity-50"
+        title="Send"
+        className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-500 text-white shadow-soft transition hover:bg-brand-600 disabled:opacity-40"
       >
-        Send
+        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7Z" />
+        </svg>
       </button>
     </form>
   );

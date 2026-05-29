@@ -62,20 +62,25 @@ export default function NewChat({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <div className="absolute inset-0 z-10 flex items-start justify-center bg-black/30 pt-16">
-      <div className="w-80 rounded-xl bg-white p-4 shadow-lg">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-semibold text-slate-800">New chat</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600">✕</button>
+    <div className="absolute inset-0 z-30 flex items-center justify-center bg-ink-900/30 p-4 backdrop-blur-sm">
+      <div className="w-[360px] rounded-3xl bg-white p-5 shadow-card">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-bold text-ink-900">New chat</h2>
+          <button
+            onClick={onClose}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-600"
+          >
+            ✕
+          </button>
         </div>
 
-        <div className="mb-3 flex rounded-lg bg-slate-100 p-1 text-sm">
+        <div className="mb-4 flex gap-1 rounded-xl bg-slate-100 p-1 text-sm">
           {(["direct", "group"] as Mode[]).map((m) => (
             <button
               key={m}
               onClick={() => setMode(m)}
-              className={`flex-1 rounded-md py-1 capitalize ${
-                mode === m ? "bg-white shadow-sm" : "text-slate-500"
+              className={`flex-1 rounded-lg py-1.5 font-medium capitalize transition ${
+                mode === m ? "bg-white text-brand-600 shadow-soft" : "text-slate-500"
               }`}
             >
               {m}
@@ -83,39 +88,52 @@ export default function NewChat({ onClose }: { onClose: () => void }) {
           ))}
         </div>
 
-        {error && <p className="mb-2 text-sm text-red-600">{error}</p>}
+        {error && <p className="mb-2 text-sm text-rose-600">{error}</p>}
 
         {mode === "group" && (
           <input
             value={groupName}
             onChange={(e) => setGroupName(e.target.value)}
             placeholder="Group name"
-            className="mb-2 w-full rounded border border-slate-300 px-3 py-2 text-sm"
+            className="mb-3 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-brand-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-100"
           />
         )}
 
         {users.length === 0 ? (
           <p className="text-sm text-slate-400">No other users yet.</p>
         ) : (
-          <ul className="max-h-72 overflow-y-auto">
-            {users.map((u) => (
-              <li key={u.id}>
-                <button
-                  disabled={busy}
-                  onClick={() => (mode === "direct" ? startDirect(u.id) : toggle(u.id))}
-                  className="flex w-full items-center gap-3 rounded px-2 py-2 text-left hover:bg-slate-100 disabled:opacity-50"
-                >
-                  {mode === "group" && (
-                    <input type="checkbox" readOnly checked={selected.has(u.id)} />
-                  )}
-                  <Avatar name={u.name} />
-                  <div>
-                    <p className="font-medium text-slate-800">{u.name}</p>
-                    <p className="text-xs text-slate-500">{u.email}</p>
-                  </div>
-                </button>
-              </li>
-            ))}
+          <ul className="max-h-72 space-y-1 overflow-y-auto">
+            {users.map((u) => {
+              const checked = selected.has(u.id);
+              return (
+                <li key={u.id}>
+                  <button
+                    disabled={busy}
+                    onClick={() => (mode === "direct" ? startDirect(u.id) : toggle(u.id))}
+                    className={`flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition disabled:opacity-50 ${
+                      mode === "group" && checked ? "bg-brand-50" : "hover:bg-slate-50"
+                    }`}
+                  >
+                    {mode === "group" && (
+                      <span
+                        className={`flex h-5 w-5 items-center justify-center rounded-md border text-xs text-white ${
+                          checked
+                            ? "border-brand-500 bg-brand-500"
+                            : "border-slate-300 bg-white"
+                        }`}
+                      >
+                        {checked && "✓"}
+                      </span>
+                    )}
+                    <Avatar name={u.name} />
+                    <div className="min-w-0">
+                      <p className="truncate font-semibold text-ink-900">{u.name}</p>
+                      <p className="truncate text-xs text-slate-500">{u.email}</p>
+                    </div>
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         )}
 
@@ -123,7 +141,7 @@ export default function NewChat({ onClose }: { onClose: () => void }) {
           <button
             onClick={submitGroup}
             disabled={busy || !groupName.trim() || selected.size === 0}
-            className="mt-3 w-full rounded bg-slate-800 py-2 text-sm font-medium text-white disabled:opacity-50"
+            className="mt-4 w-full rounded-xl bg-brand-500 py-2.5 text-sm font-semibold text-white shadow-soft transition hover:bg-brand-600 disabled:opacity-40"
           >
             Create group ({selected.size})
           </button>

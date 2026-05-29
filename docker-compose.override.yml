@@ -1,0 +1,8 @@
+# Local override: host already runs mongo on 27017 and redis on 6379.
+# Drop host port publication so the compose stack uses the internal docker network only.
+# Delete this file (or override) when you need direct host access to the containerized stores.
+services:
+  mongo:
+    ports: !reset []
+  redis:
+    ports: !reset []

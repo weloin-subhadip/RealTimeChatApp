@@ -14,7 +14,7 @@ import {
   revokeRefreshToken,
 } from "../redis/tokens.js";
 
-export interface AuthResult {
+export interface AuthResult { 
   user: PublicUser;
   accessToken: string;
   refreshToken: string;

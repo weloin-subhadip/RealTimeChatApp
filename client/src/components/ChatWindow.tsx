@@ -31,7 +31,7 @@ export default function ChatWindow() {
     activeId ? s.typing[activeId] : undefined
   );
   const typingHere = typingForActive ?? EMPTY_TYPERS;
-  const [showInfo, setShowInfo] = useState(false);
+  const [showInfo, setShowInfo] = useState(true);
   const [loadingOlder, setLoadingOlder] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -99,8 +99,16 @@ export default function ChatWindow() {
 
   if (!activeId || !conversation) {
     return (
-      <div className="flex flex-1 items-center justify-center text-slate-400">
-        Select a conversation to start chatting.
+      <div className="flex flex-1 flex-col items-center justify-center gap-4 bg-brand-50/40 text-center">
+        <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-white text-brand-500 shadow-soft">
+          <svg viewBox="0 0 24 24" className="h-9 w-9" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H9l-4 3v-3H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" />
+          </svg>
+        </div>
+        <div>
+          <p className="text-lg font-semibold text-ink-900">Your messages</p>
+          <p className="text-sm text-slate-400">Select a conversation to start chatting.</p>
+        </div>
       </div>
     );
   }
@@ -129,44 +137,69 @@ export default function ChatWindow() {
   }
 
   return (
-    <div className="flex flex-1 flex-col">
-      <header
-        onClick={() => isGroup && setShowInfo(true)}
-        className={`flex items-center gap-3 border-b border-slate-200 bg-white px-4 py-3 ${
-          isGroup ? "cursor-pointer hover:bg-slate-50" : ""
-        }`}
-      >
-        <Avatar name={title} online={isGroup ? undefined : otherOnline} />
-        <div>
-          <h2 className="font-semibold text-slate-800">{title}</h2>
-          <p className={`text-xs ${typingActive ? "italic text-green-600" : "text-slate-400"}`}>
-            {status}
-          </p>
-        </div>
-      </header>
+    <div className="relative flex min-w-0 flex-1">
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="flex items-center gap-3 border-b border-slate-100 bg-white px-6 py-4">
+          <Avatar name={title} online={isGroup ? undefined : otherOnline} />
+          <div className="min-w-0">
+            <h2 className="truncate font-bold text-ink-900">{title}</h2>
+            <p
+              className={`truncate text-xs ${
+                typingActive
+                  ? "font-medium text-brand-500"
+                  : isGroup
+                    ? "text-slate-400"
+                    : otherOnline
+                      ? "text-emerald-500"
+                      : "text-slate-400"
+              }`}
+            >
+              {status}
+            </p>
+          </div>
+          <button
+            onClick={() => setShowInfo((v) => !v)}
+            title={isGroup ? "Group info" : "Contact info"}
+            className={`ml-auto flex h-10 w-10 items-center justify-center rounded-xl transition ${
+              showInfo
+                ? "bg-brand-500 text-white"
+                : "bg-slate-100 text-slate-500 hover:bg-brand-50 hover:text-brand-500"
+            }`}
+          >
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 16v-4M12 8h.01" />
+            </svg>
+          </button>
+        </header>
 
-      <div
-        ref={containerRef}
-        onScroll={onScroll}
-        className="flex-1 space-y-2 overflow-y-auto bg-slate-50 p-4"
-      >
-        {loadingOlder && (
-          <p className="text-center text-xs text-slate-400">Loading…</p>
-        )}
-        {(messages ?? []).map((m) => (
-          <MessageBubble
-            key={m.id}
-            message={m}
-            mine={m.senderId === myId}
-            senderName={isGroup ? nameOf(m.senderId) : undefined}
-          />
-        ))}
+        <div
+          ref={containerRef}
+          onScroll={onScroll}
+          className="flex-1 space-y-3 overflow-y-auto bg-brand-50/30 px-6 py-5"
+        >
+          {loadingOlder && (
+            <p className="text-center text-xs text-slate-400">Loading…</p>
+          )}
+          {(messages ?? []).map((m) => (
+            <MessageBubble
+              key={m.id}
+              message={m}
+              mine={m.senderId === myId}
+              senderName={isGroup ? nameOf(m.senderId) : undefined}
+              showAvatar={isGroup}
+            />
+          ))}
+        </div>
+
+        <MessageComposer conversationId={activeId} />
       </div>
 
-      <MessageComposer conversationId={activeId} />
-
-      {showInfo && isGroup && (
-        <GroupInfo conversation={conversation} onClose={() => setShowInfo(false)} />
+      {showInfo && (
+        <GroupInfo
+          conversation={conversation}
+          onClose={() => setShowInfo(false)}
+        />
       )}
     </div>
   );

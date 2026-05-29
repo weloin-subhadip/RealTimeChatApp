@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,4 +9,32 @@ body,
 #root {
   height: 100%;
   margin: 0;
+}
+
+body {
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /* Soft lavender wash + faint dotted pattern, matching the reference design. */
+  background-color: #e9e6f5;
+  background-image:
+    radial-gradient(rgba(124, 92, 231, 0.12) 1px, transparent 1px),
+    linear-gradient(135deg, #ece9f7 0%, #e4e0f3 50%, #efeafc 100%);
+  background-size: 22px 22px, 100% 100%;
+}
+
+/* Slim, unobtrusive scrollbars throughout the app. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(124, 92, 231, 0.35) transparent;
+}
+*::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(124, 92, 231, 0.35);
+  border-radius: 9999px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
 }
